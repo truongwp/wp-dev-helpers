@@ -99,3 +99,20 @@ function truongwp_trigger_error( $message, $type = 'notice' ) {
 
 	trigger_error( $message, $error_type ); // WPCS: xss ok.
 }
+
+/**
+ * Logs message.
+ *
+ * @param mixed $content Content to log.
+ */
+function truongwp_log( $content ) {
+	if ( ! WP_DEBUG ) {
+		return;
+	}
+
+	if ( is_string( $content ) ) {
+		error_log( $content );
+	} else {
+		error_log( print_r( $content, true ) );
+	}
+}
