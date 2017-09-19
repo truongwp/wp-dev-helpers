@@ -132,11 +132,15 @@ function truongwp_build_html_attrs( $attrs ) {
 	$html_attrs = array();
 
 	foreach ( $attrs as $key => $value ) {
-		if ( empty( $key ) || '' === $value ) {
+		if ( is_numeric( $key ) ) {
 			continue;
 		}
 
-		if ( false === $value ) {
+		if ( false === $value || null === $value ) {
+			continue;
+		}
+
+		if ( '' === $value ) {
 			$html_attrs[] = esc_attr( $key );
 		} else {
 			$html_attrs[] = sprintf( '%s="%s"', esc_attr( $key ), esc_attr( $value ) );
