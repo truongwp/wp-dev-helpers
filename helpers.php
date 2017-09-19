@@ -116,3 +116,32 @@ function truongwp_log( $content ) {
 		error_log( print_r( $content, true ) );
 	}
 }
+
+
+/**
+ * Gets HTML attributes from attributes array,
+ *
+ * @param array $attrs Attributes array.
+ * @return string
+ */
+function truongwp_build_html_attrs( $attrs ) {
+	if ( empty( $attrs ) ) {
+		return '';
+	}
+
+	$html_attrs = array();
+
+	foreach ( $attrs as $key => $value ) {
+		if ( empty( $key ) || '' === $value ) {
+			continue;
+		}
+
+		if ( false === $value ) {
+			$html_attrs[] = esc_attr( $key );
+		} else {
+			$html_attrs[] = sprintf( '%s="%s"', esc_attr( $key ), esc_attr( $value ) );
+		}
+	}
+
+	return implode( ' ', $html_attrs );
+}
