@@ -1,8 +1,10 @@
 <?php
 /**
- * Helper functions
+ * Helper functions for WordPress development
  *
  * @package Truongwp
+ * @author Truong Giang <truongwp@gmail.com>
+ * @var 0.2.0
  */
 
 /**
@@ -148,4 +150,222 @@ function truongwp_build_html_attrs( $attrs ) {
 	}
 
 	return implode( ' ', $html_attrs );
+}
+
+
+/**
+ * Prints label element.
+ *
+ * @param  array $data Element data.
+ * @return string      If `echo` is set to `false`.
+ */
+function truongwp_label( $data = array() ) {
+	$data = wp_parse_args( $data, array(
+		'text'     => '',
+		'required' => false,
+		'attrs'    => array(),
+		'echo'     => true,
+	) );
+
+	if ( ! $data['text'] ) {
+		return;
+	}
+
+	$output = '<label';
+
+	$html_attrs = truongwp_build_html_attrs( $data['attrs'] );
+	if ( $html_attrs ) {
+		$output .= ' ' . $html_attrs;
+	}
+
+	$output .= '>';
+
+	$output .= esc_html( $data['text'] );
+
+	if ( $data['required'] ) {
+		$output .= '<span class="required">*</span>';
+	}
+
+	$output .= '</label>';
+
+	if ( ! $data['echo'] ) {
+		return $output;
+	}
+
+	echo $output;
+}
+
+
+/**
+ * Prints input element.
+ *
+ * @param  array $data Element data.
+ * @return string      If `echo` is set to `false`.
+ */
+function truongwp_input( $data ) {
+	$data = wp_parse_args( $data, array(
+		'label'       => '',
+		'type'        => 'text',
+		'value'       => '',
+		'required'    => false,
+		'attrs'       => array(),
+		'echo'        => true,
+	) );
+
+	$attrs = $data['attrs'];
+	$attrs['type'] = $data['type'];
+	$attrs['value'] = $data['value'];
+	if ( $data['required'] ) {
+		$attrs['required'] = '';
+	}
+
+	$output = '';
+
+	if ( $data['label'] ) {
+		$output .= truongwp_label( array(
+			'text' => $data['label'],
+			'echo' => false,
+			'required' => $data['required'],
+			'attrs'    => array(
+				'for' => ! empty( $attrs['id'] ) ? $attrs['id'] : false,
+			),
+		) );
+	}
+
+	$output .= '<input';
+	$attrs = truongwp_build_html_attrs( $attrs );
+	if ( $attrs ) {
+		$output .= ' ' . $attrs;
+	}
+	$output .= '>';
+
+	if ( ! $data['echo'] ) {
+		return $output;
+	}
+
+	echo $output;
+}
+
+
+/**
+ * Prints checkbox element.
+ *
+ * @param  array $data Element data.
+ * @return string      If `echo` is set to `false`.
+ */
+function truongwp_checkbox( $data ) {
+	$data = wp_parse_args( $data, array(
+		'label'    => '',
+		'value'    => '',
+		'checked'  => false,
+		'required' => false,
+		'attrs'    => array(),
+		'echo'     => true,
+	) );
+
+	$attrs = $data['attrs'];
+	$attrs['type'] = 'checkbox';
+	$attrs['value'] = $data['value'];
+	if ( $data['required'] ) {
+		$attrs['required'] = '';
+	}
+
+	if ( $data['checked'] ) {
+		$attrs['checked'] = '';
+	}
+
+	$output = '<label>';
+
+	$output .= '<input';
+	$attrs = truongwp_build_html_attrs( $attrs );
+	if ( $attrs ) {
+		$output .= ' ' . $attrs;
+	}
+	$output .= '>';
+
+	$output .= esc_html( $data['label'] );
+
+	$output .= '</label>';
+
+	if ( ! $data['echo'] ) {
+		return $output;
+	}
+
+	echo $output;
+}
+
+
+/**
+ * Prints select element.
+ *
+ * @param array $data Element data.
+ * @return string
+ */
+function truongwp_select( $data ) {
+	$data = wp_parse_args( $data, array(
+		'label'       => '',
+		'value'       => '',
+		'options'     => array(),
+		'none_option' => '',
+		'required'    => false,
+		'attrs'       => array(),
+		'echo'        => true,
+	) );
+
+	if ( ! $data['options'] && ! $data['none_option'] ) {
+		return;
+	}
+
+	$attrs = $data['attrs'];
+	if ( $data['required'] ) {
+		$attrs['required'] = '';
+	}
+
+	if ( $data['none_option'] ) {
+		$data['options'] = array_merge(
+			array(
+				'' => $data['none_option'],
+			),
+			$data['options']
+		);
+	}
+
+	$output = '';
+
+	if ( $data['label'] ) {
+		$output .= truongwp_label( array(
+			'text' => $data['label'],
+			'echo' => false,
+			'required' => $data['required'],
+			'attrs'    => array(
+				'for' => ! empty( $attrs['id'] ) ? $attrs['id'] : false,
+			),
+		) );
+	}
+
+	$output .= '<select';
+
+	$attrs = truongwp_build_html_attrs( $attrs );
+	if ( $attrs ) {
+		$output .= ' ' . $attrs;
+	}
+
+	$output .= '>';
+
+	foreach ( $data['options'] as $key => $value ) {
+		$output .= sprintf(
+			'<option value="%1$s" %2$s>%3$s</option>',
+			esc_attr( $key ),
+			selected( $data['value'], $key, false ),
+			esc_html( $value )
+		);
+	}
+
+	$output .= '</select>';
+
+	if ( ! $data['echo'] ) {
+		return $output;
+	}
+
+	echo $output;
 }
