@@ -322,12 +322,10 @@ function truongwp_select( $data ) {
 	}
 
 	if ( $data['none_option'] ) {
-		$data['options'] = array_merge(
-			array(
-				'' => $data['none_option'],
-			),
-			$data['options']
+		$none_option = array(
+			'' => $data['none_option'],
 		);
+		$data['options'] = $none_option + $data['options'];
 	}
 
 	$output = '';
