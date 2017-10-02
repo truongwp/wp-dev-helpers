@@ -4,7 +4,7 @@
  *
  * @package Truongwp
  * @author Truong Giang <truongwp@gmail.com>
- * @var 0.2.0
+ * @var 0.2.1
  */
 
 /**
